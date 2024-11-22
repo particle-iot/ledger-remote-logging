@@ -13,7 +13,7 @@
 SYSTEM_MODE(AUTOMATIC);
 
 // Run the application and system concurrently in separate threads
-SYSTEM_THREAD(ENABLED);
+SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.0
 
 // Show system, cloud connectivity, and application logs over USB
 // View logs with CLI using 'particle serial monitor --follow'
@@ -31,16 +31,16 @@ void setup() {
   waitFor(Serial.isConnected, 10000);   //waits for serial port for specified time, handy for seeing early log messages
 
   // Start cloud to device ledger synchronization
-  deviceConfig = Particle.ledger("device-config");
-  deviceConfig.onSync(syncCallback);
+  DeviceConfig = Particle.ledger("device-config");
+  //DeviceConfig.onSync(OnSyncCallback);    //EAF need to do this to set the config values for logging
+  //https://docs.particle.io/reference/device-os/api/ledger/onsync-onsynccallback-ledger-class/
 
   // set device to cloud ledger
   DeviceLogging = Particle.ledger("device-logging");
 
   //insert ledger??
-
-  /*
-  DeviceLoggingLedger::instance()
+/*
+  DeviceInfoLedger::instance()
 
         .withLocalConfig(localConfig)   //need to figure this out since I'm not showing localconfig....
         .withRetainedBuffer(remoteLogs, sizeof(remoteLogs))
@@ -59,5 +59,7 @@ void loop() {
   // Particle.publish("Hello world!");
   // delay( 10 * 1000 ); // milliseconds and blocking - see docs for more info!
 
-  DeviceLoggingLedger::instance().loop();
+  //insert the portion to set the data to the D->C ledger
+
+  //DeviceInfoLedger::instance().loop();
 }
