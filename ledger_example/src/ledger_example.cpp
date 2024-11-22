@@ -19,9 +19,35 @@ SYSTEM_THREAD(ENABLED);
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
+Ledger DeviceLogging;   //device to cloud ledger for the remote logs
+Ledger DeviceConfig;    //cloud to device ledger for configuration
+
+retained uint8_t remoteLogs[2048];
+
 // setup() runs once, when the device is first turned on
 void setup() {
   // Put initialization like pinMode and begin functions here
+  
+  waitFor(Serial.isConnected, 10000);   //waits for serial port for specified time, handy for seeing early log messages
+
+  // Start cloud to device ledger synchronization
+  deviceConfig = Particle.ledger("device-config");
+  deviceConfig.onSync(syncCallback);
+
+  // set device to cloud ledger
+  DeviceLogging = Particle.ledger("device-logging");
+
+  //insert ledger??
+
+  /*
+  DeviceLoggingLedger::instance()
+
+        .withLocalConfig(localConfig)   //need to figure this out since I'm not showing localconfig....
+        .withRetainedBuffer(remoteLogs, sizeof(remoteLogs))
+        .setup(); 
+  */
+
+
 }
 
 // loop() runs over and over again, as quickly as it can execute.
@@ -32,4 +58,6 @@ void loop() {
   // Log.info("Sending Hello World to the cloud!");
   // Particle.publish("Hello world!");
   // delay( 10 * 1000 ); // milliseconds and blocking - see docs for more info!
+
+  DeviceLoggingLedger::instance().loop();
 }
