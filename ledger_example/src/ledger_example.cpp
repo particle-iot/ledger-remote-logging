@@ -9,8 +9,11 @@
 // Include Particle Device OS APIs
 #include "Particle.h"
 
+// inlcude library APIs
+#include "DeviceInfoLedger.h"
+
 // Let Device OS manage the connection to the Particle Cloud
-SYSTEM_MODE(AUTOMATIC);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 // Run the application and system concurrently in separate threads
 SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.0
@@ -19,10 +22,8 @@ SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.0
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
-Ledger DeviceLogging;   //device to cloud ledger for the remote logs
-Ledger DeviceConfig;    //cloud to device ledger for configuration
+retained uint8_t retainedLogs[2048];
 
-retained uint8_t remoteLogs[2048];
 
 // setup() runs once, when the device is first turned on
 void setup() {
@@ -30,6 +31,25 @@ void setup() {
   
   waitFor(Serial.isConnected, 10000);   //waits for serial port for specified time, handy for seeing early log messages
 
+    // This sets up remote configuration
+    DeviceConfigLedger::instance()
+        .withConfigDefaultLedgerName("device-config")
+        //.withConfigDeviceLedgerName("device-info-config")
+        .setup();
+
+    // This sets up the device information in ledger
+    DeviceInfoLedger::instance()
+        .withInfoLedgerName("device-logging")
+        .withRetainedBuffer(retainedLogs, sizeof(retainedLogs))
+        .setup(); 
+
+
+    // Using SYSTEM_MODE(SEMI_AUTOMATIC) and calling Particle.connect() after calling setup() for DeviceInfoLedger
+    // is recommended to avoid getting new connection information in the last run log.
+    Particle.connect();
+
+
+/*
   // Start cloud to device ledger synchronization
   DeviceConfig = Particle.ledger("device-config");
   //DeviceConfig.onSync(OnSyncCallback);    //EAF need to do this to set the config values for logging
@@ -37,14 +57,6 @@ void setup() {
 
   // set device to cloud ledger
   DeviceLogging = Particle.ledger("device-logging");
-
-  //insert ledger??
-/*
-  DeviceInfoLedger::instance()
-
-        .withLocalConfig(localConfig)   //need to figure this out since I'm not showing localconfig....
-        .withRetainedBuffer(remoteLogs, sizeof(remoteLogs))
-        .setup(); 
   */
 
 
@@ -61,5 +73,5 @@ void loop() {
 
   //insert the portion to set the data to the D->C ledger
 
-  //DeviceInfoLedger::instance().loop();
+  DeviceInfoLedger::instance().loop();
 }
