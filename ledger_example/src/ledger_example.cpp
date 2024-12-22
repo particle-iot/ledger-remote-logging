@@ -16,7 +16,10 @@
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 // Run the application and system concurrently in separate threads
-SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.0
+SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.x
+
+// set the firmware version
+PRODUCT_VERSION(3);
 
 // Show system, cloud connectivity, and application logs over USB
 // View logs with CLI using 'particle serial monitor --follow'
@@ -34,7 +37,6 @@ void setup() {
     // This sets up remote configuration
     DeviceConfigLedger::instance()
         .withConfigDefaultLedgerName("device-config")
-        //.withConfigDeviceLedgerName("device-info-config")
         .setup();
 
     // This sets up the device information in ledger
