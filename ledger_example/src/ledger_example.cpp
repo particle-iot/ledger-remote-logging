@@ -1,10 +1,3 @@
-/* 
- * Project myProject
- * Author: Your Name
- * Date: 
- * For comprehensive documentation and examples, please visit:
- * https://docs.particle.io/firmware/best-practices/firmware-template/
- */
 
 // Include Particle Device OS APIs
 #include "Particle.h"
@@ -18,15 +11,15 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 // Run the application and system concurrently in separate threads
 SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.x
 
-// set the firmware version
+// Set the firmware version
 PRODUCT_VERSION(3);
 
 // Show system, cloud connectivity, and application logs over USB
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
+// Used for retaining the last log
 retained uint8_t retainedLogs[2048];
-
 
 // setup() runs once, when the device is first turned on
 void setup() {
@@ -50,18 +43,6 @@ void setup() {
     // is recommended to avoid getting new connection information in the last run log.
     Particle.connect();
 
-
-/*
-  // Start cloud to device ledger synchronization
-  DeviceConfig = Particle.ledger("device-config");
-  //DeviceConfig.onSync(OnSyncCallback);    //EAF need to do this to set the config values for logging
-  //https://docs.particle.io/reference/device-os/api/ledger/onsync-onsynccallback-ledger-class/
-
-  // set device to cloud ledger
-  DeviceLogging = Particle.ledger("device-logging");
-  */
-
-
 }
 
 // loop() runs over and over again, as quickly as it can execute.
@@ -73,7 +54,6 @@ void loop() {
   // Particle.publish("Hello world!");
   // delay( 10 * 1000 ); // milliseconds and blocking - see docs for more info!
 
-  //insert the portion to set the data to the D->C ledger
-
+  // This captures the various messages and sets the values in retainedLogs
   DeviceInfoLedger::instance().loop();
 }
