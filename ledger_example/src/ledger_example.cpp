@@ -31,7 +31,7 @@ void setup() {
     DeviceConfigLedger::instance()
         .withConfigDefaultLedgerName("device-config")
         .setup();
-
+    
     // This sets up the device information in ledger
     DeviceInfoLedger::instance()
         .withInfoLedgerName("device-logging")
