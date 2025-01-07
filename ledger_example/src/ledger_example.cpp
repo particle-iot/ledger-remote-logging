@@ -11,9 +11,6 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 // Run the application and system concurrently in separate threads
 SYSTEM_THREAD(ENABLED);   //not required for OS >=6.2.x
 
-// Set the firmware version
-PRODUCT_VERSION(3);
-
 // Show system, cloud connectivity, and application logs over USB
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
