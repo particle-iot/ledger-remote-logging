@@ -1,3 +1,0 @@
-[submodule "automated-test/UnitTestLib"]
-	path = automated-test/UnitTestLib
-	url = https://github.com/rickkas7/UnitTestLib
